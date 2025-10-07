@@ -4,146 +4,168 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>McAfee Protection Alert</title>
-  <style>
-    body {
-      background: #d9d9d9;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+/* Сброс и базовая сетка */
+html { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #d9d9d9;
+  -webkit-text-size-adjust: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 0;
+}
 
-    .popup {
-      width: 500px;
-      margin: 80px auto;
-      background: #fff;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
-      text-align: center;
-      padding: 20px;
-      position: relative;
-    }
+/* Контейнер / popup */
+.popup {
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+  text-align: center;
+  border-radius: 12px;
+  width: min(92vw, 480px);
+  margin: 8vh auto;
+  padding: clamp(16px, 3.5vw, 24px);
+}
 
-    .logo {
-      margin-bottom: 30px;
-    }
+/* Лого */
+.logo { margin-bottom: 30px; }
+.logo img { max-width: 160px; width: 100%; height: auto; }
 
-    .logo img {
-      width: 160px;
-    }
+/* Заголовки */
+.popup h2 {
+  background: #b91c1c;
+  color: #fff;
+  margin: -24px -24px 20px -24px;
+  padding: 18px;
+  font-size: clamp(20px, 5vw, 24px);
+  border-radius: 12px 12px 0 0;
+}
 
-    .popup h2 {
-      background: #d60000;
-      color: #fff;
-      margin: -20px -20px 20px -20px;
-      padding: 18px;
-      font-size: 22px;
-    }
+/* Текст */
+.popup p {
+  font-size: clamp(14px, 3.8vw, 16px);
+  line-height: 1.5;
+  margin: 12px 0;
+}
+.highlight {
+  color: #b91c1c;
+  font-weight: bold;
+  animation: blink 1s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-    .popup p {
-      font-size: 15px;
-      line-height: 1.5;
-      margin: 12px 0;
-    }
+/* Серийник / код */
+.serial {
+  background: #f1f1f1;
+  padding: 10px;
+  font-family: monospace;
+  margin: 14px auto;
+  display: inline-block;
+  font-size: 15px;
+  word-break: break-word;
+}
 
-    .highlight {
-      color: red;
-      font-weight: bold;
-      animation: blink 1s infinite;
-    }
+/* Кнопки */
+.btn, #activateBtn, #alertBtn {
+  background: #b91c1c;   /* красный */
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
 
-    @keyframes blink {
-      0% { color: red; }
-      50% { color: transparent; }
-      100% { color: red; }
-    }
+/* Размеры кнопок */
+@media (max-width: 768px) {
+  .btn, #activateBtn, #alertBtn {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    margin: 14px auto 0;
+    padding: 12px 16px;
+    min-height: 44px;
+  }
+}
+@media (min-width: 769px) {
+  .btn, #activateBtn, #alertBtn {
+    display: inline-block;
+    padding: 12px 22px;
+    margin-top: 18px;
+  }
+}
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
+/* Анимации кнопок */
+@keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.05)} 100%{transform:scale(1)} }
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-3px)}
+  50%{transform:translateX(3px)}
+  75%{transform:translateX(-3px)}
+}
+.btn, #activateBtn, #alertBtn { animation: pulse 1.5s infinite; }
+.btn:hover, #activateBtn:hover, #alertBtn:hover {
+  background:#991b1b;  /* тёмно-красный при ховере */
+  box-shadow:0 0 12px rgba(185,28,28,0.45);
+  animation: pulse 1.5s infinite, shake 0.3s infinite;
+}
+/* На тач-экранах отключаем hover-анимации */
+@media (hover: none) and (pointer: coarse) {
+  .btn:hover, #activateBtn:hover, #alertBtn:hover { animation: none !important; box-shadow: none !important; }
+}
 
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-3px); }
-      50% { transform: translateX(3px); }
-      75% { transform: translateX(-3px); }
-      100% { transform: translateX(0); }
-    }
+/* Footer alert */
+.footer-alert {
+  position: fixed;
+  bottom: -220px;
+  right: 12px;
+  left: 12px;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
+  font-size: 14px;
+  padding: 15px;
+  border-radius: 12px;
+  transition: bottom 0.8s ease-in-out;
+  width: auto;
+}
+.footer-alert.show { bottom: 12px; }
+.footer-alert h3 {
+  background: #b91c1c;
+  color: #fff;
+  margin: -15px -15px 12px -15px;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 12px 12px 0 0;
+}
+.footer-alert button, #alertBtn {
+  background: #b91c1c; /* красный */
+  padding: 10px 16px;
+  border-radius: 8px;
+}
+.footer-alert button:hover, #alertBtn:hover {
+  background: #991b1b; /* тёмно-красный при ховере */
+  box-shadow: 0 0 10px rgba(185,28,28,0.45);
+}
+@media (min-width: 481px) {
+  .footer-alert { left: auto; width: 320px; }
+}
 
-    .btn {
-      display: inline-block;
-      margin-top: 18px;
-      background: #d60000;
-      color: white;
-      padding: 14px 24px;
-      border: none;
-      cursor: pointer;
-      font-size: 17px;
-      border-radius: 5px;
-      animation: pulse 1.5s infinite;
-      transition: box-shadow 0.3s ease;
-      text-decoration: none;
-    }
+/* Дисклеймер */
+.disclaimer {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 10px;
+  text-align: left;
+}
+</style>
 
-    .btn:hover {
-      background: #b80000;
-      box-shadow: 0 0 12px rgba(214, 0, 0, 0.7);
-      animation: pulse 1.5s infinite, shake 0.3s infinite;
-    }
-
-    .serial {
-      background: #f1f1f1;
-      padding: 10px;
-      font-family: monospace;
-      margin: 14px auto;
-      display: inline-block;
-      font-size: 16px;
-    }
-
-    .footer-alert {
-      position: fixed;
-      bottom: -220px;
-      right: 10px;
-      width: 300px;
-      background: #fff;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 8px rgba(0,0,0,0.3);
-      font-size: 14px;
-      padding: 15px;
-      transition: bottom 0.8s ease-in-out;
-    }
-
-    .footer-alert.show {
-      bottom: 10px;
-    }
-
-    .footer-alert h3 {
-      background: #d60000;
-      color: white;
-      margin: -15px -15px 12px -15px;
-      padding: 10px;
-      font-size: 15px;
-    }
-
-    .footer-alert button {
-      background: #007bff;
-      color: #fff;
-      border: none;
-      padding: 9px 14px;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 14px;
-      animation: pulse 1.8s infinite;
-      transition: box-shadow 0.3s ease;
-    }
-
-    .footer-alert button:hover {
-      background: #0056b3;
-      box-shadow: 0 0 10px rgba(0, 91, 255, 0.7);
-      animation: pulse 1.8s infinite, shake 0.3s infinite;
-    }
-  </style>
 </head>
 <body>
 
@@ -164,7 +186,7 @@
     <h3>Your PC is infected with 5 viruses!</h3>
     <p><b>Action required!</b> If your PC is unprotected, it is at risk for viruses and malware.</p>
     <p>New users can enjoy 70% off upon registration.</p>
-    <button>Proceed...</button>
+    <button id="alertBtn">Learn more</button>
   </div>
   <script>
     window.onload = function() {
@@ -216,6 +238,15 @@
       window.location.href = buildSitelinkUrl();
     });
   }
+
+  const alertBtn = document.getElementById('alertBtn');
+if (alertBtn) {
+  alertBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.location.href = buildSitelinkUrl();
+  });
+}
+
 })();
 </script>
 
