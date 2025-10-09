@@ -199,56 +199,40 @@ body {
 
 <script>
 (function () {
-  const qp = new URLSearchParams(window.location.search);
-  const fbParams = {
-    fbp: qp.get('fbp') || '',
-    sub2: qp.get('sub2') || '',
-    sub3: qp.get('sub3') || '',
-    sub4: qp.get('sub4') || '',
-    sub5: qp.get('sub5') || '',
-    sub6: qp.get('sub6') || '',
-    sub7: qp.get('sub7') || '',
-    sub8: qp.get('sub8') || '',
-    sub9: qp.get('sub9') || '',
-    sub10: qp.get('sub10') || '',
-    sub11: qp.get('sub11') || ''
-  };
+  // Читаем параметры из Taboola URL
+  const q = new URLSearchParams(window.location.search);
+  function val(k) { return q.get(k) || ''; }
 
   function buildSitelinkUrl() {
     const base = 'https://sitelink.one/pJZbGy';
     const params = new URLSearchParams({
-      cost: '',
-      external_id: fbParams.sub2,
-      creative_id: fbParams.sub9,
-      ad_campaign_id: fbParams.sub7,
-      source: fbParams.sub10 || 'Facebook',
-      platform: fbParams.sub11 || '',
-      thumbnail: '',
-      sub_id_5: fbParams.sub6 || '',
-      sub_id_6: fbParams.sub8 || '',
-      sub_id_7: fbParams.sub4 || ''
+      cost:              val('cpc'),
+      external_id:       val('click_id'),
+      creative_id:       val('campaign_item_id'),
+      ad_campaign_id:    val('campaign_id'),
+      source:            val('site'),
+      platform:          val('platform'),
+      thumbnail:         val('thumbnail'),
+      sub_id_5:          val('title'),
+      sub_id_6:          val('site_id'),
+      sub_id_7:          val('campaign_name')
     });
     return base + '?' + params.toString();
   }
 
-  const btn = document.getElementById('activateBtn');
-  if (btn) {
-    btn.addEventListener('click', function (e) {
+  function wire(el) {
+    if (!el) return;
+    el.addEventListener('click', function (e) {
       e.preventDefault();
       window.location.href = buildSitelinkUrl();
     });
   }
 
-  const alertBtn = document.getElementById('alertBtn');
-if (alertBtn) {
-  alertBtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = buildSitelinkUrl();
-  });
-}
-
+  wire(document.getElementById('activateBtn'));
+  wire(document.getElementById('alertBtn'));
 })();
 </script>
+
 
 </body>
 </html>
