@@ -197,14 +197,11 @@ body {
   </script>
 
 
-<script>
+<script defer>
 (function () {
-  // Берём параметры ровно из Taboola
+  // Берём параметры из URL (Taboola кладёт их здесь)
   const q = new URLSearchParams(window.location.search);
   const get = (k) => q.get(k) || '';
-
-  // Мини-валидация: считаем, что click_id обязателен для отправки
-  const hasRequired = !!get('click_id');
 
   function buildSitelinkUrl() {
     const base = 'https://sitelink.one/pJZbGy';
@@ -223,25 +220,36 @@ body {
     return base + '?' + params.toString();
   }
 
-  function wireRedirect(btnId) {
-    const el = document.getElementById(btnId);
+  function setRedirect(el) {
     if (!el) return;
-    el.addEventListener('click', function (e) {
-      e.preventDefault();
-      if (!hasRequired) {
-        // Нет click_id → клик «пустой» (например, не из Taboola) — ничего не отправляем.
-        // Можешь показать подсказку или сделать noop.
-        console.warn('No Taboola click_id in URL — skipping redirect.');
-        return;
-      }
-      window.location.href = buildSitelinkUrl();
-    });
+    // Прямо прописываем готовый href (чтобы редирект работал даже без JS-клика)
+    const url = buildSitelinkUrl();
+    if (el.tagName.toLowerCase() === 'a') {
+      el.setAttribute('href', url);
+      el.setAttribute('rel', 'noopener');
+      // если хочешь в новой вкладке:
+      // el.setAttribute('target','_blank');
+    } else {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = url;
+      });
+    }
   }
 
-  wireRedirect('activateBtn'); // основная кнопка
-  wireRedirect('alertBtn');    // кнопка в нижнем алерте
+  // 1) По ID (ожидаемые)
+  setRedirect(document.getElementById('activateBtn'));
+  setRedirect(document.getElementById('alertBtn'));
+
+  // 2) На всякий случай — первый .btn с текстом "Activate" (fallback)
+  if (!document.getElementById('activateBtn')) {
+    const candidate = Array.from(document.querySelectorAll('.btn,a.btn,button.btn'))
+      .find(el => (el.textContent || '').toLowerCase().includes('activate'));
+    setRedirect(candidate);
+  }
 })();
 </script>
+
 
 
 
