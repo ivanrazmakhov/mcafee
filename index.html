@@ -199,39 +199,50 @@ body {
 
 <script>
 (function () {
-  // Читаем параметры из Taboola URL
+  // Берём параметры ровно из Taboola
   const q = new URLSearchParams(window.location.search);
-  function val(k) { return q.get(k) || ''; }
+  const get = (k) => q.get(k) || '';
+
+  // Мини-валидация: считаем, что click_id обязателен для отправки
+  const hasRequired = !!get('click_id');
 
   function buildSitelinkUrl() {
     const base = 'https://sitelink.one/pJZbGy';
     const params = new URLSearchParams({
-      cost:              val('cpc'),
-      external_id:       val('click_id'),
-      creative_id:       val('campaign_item_id'),
-      ad_campaign_id:    val('campaign_id'),
-      source:            val('site'),
-      platform:          val('platform'),
-      thumbnail:         val('thumbnail'),
-      sub_id_5:          val('title'),
-      sub_id_6:          val('site_id'),
-      sub_id_7:          val('campaign_name')
+      cost:              get('cpc'),
+      external_id:       get('click_id'),
+      creative_id:       get('campaign_item_id'),
+      ad_campaign_id:    get('campaign_id'),
+      source:            get('site'),
+      platform:          get('platform'),
+      thumbnail:         get('thumbnail'),
+      sub_id_5:          get('title'),
+      sub_id_6:          get('site_id'),
+      sub_id_7:          get('campaign_name')
     });
     return base + '?' + params.toString();
   }
 
-  function wire(el) {
+  function wireRedirect(btnId) {
+    const el = document.getElementById(btnId);
     if (!el) return;
     el.addEventListener('click', function (e) {
       e.preventDefault();
+      if (!hasRequired) {
+        // Нет click_id → клик «пустой» (например, не из Taboola) — ничего не отправляем.
+        // Можешь показать подсказку или сделать noop.
+        console.warn('No Taboola click_id in URL — skipping redirect.');
+        return;
+      }
       window.location.href = buildSitelinkUrl();
     });
   }
 
-  wire(document.getElementById('activateBtn'));
-  wire(document.getElementById('alertBtn'));
+  wireRedirect('activateBtn'); // основная кнопка
+  wireRedirect('alertBtn');    // кнопка в нижнем алерте
 })();
 </script>
+
 
 
 </body>
