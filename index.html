@@ -126,6 +126,7 @@
     border-radius: 12px;
     transition: bottom 0.8s ease-in-out;
     width: auto;
+    z-index: 10;
   }
   .footer-alert.show { bottom: 12px; }
   .footer-alert h3 {
@@ -136,12 +137,12 @@
     font-size: 15px;
     border-radius: 12px 12px 0 0;
   }
-  .footer-alert button, #alertBtn {
-    background: #b91c1c;
+  .footer-alert a#alertBtn {
+    display: inline-block;
     padding: 10px 16px;
     border-radius: 8px;
   }
-  .footer-alert button:hover, #alertBtn:hover {
+  .footer-alert a#alertBtn:hover {
     background: #991b1b;
     box-shadow: 0 0 10px rgba(185,28,28,0.45);
   }
@@ -157,13 +158,28 @@
   }
   </style>
 
-  <!-- Скрипт только для появления нижнего алерта -->
+  <!-- Скрипт только для появления нижнего алерта и фикса кликов -->
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
+    // Показать нижний алерт через 1.2с
     setTimeout(() => {
       const box = document.getElementById('alertBox');
       if (box) box.classList.add('show');
     }, 1200);
+
+    // Жёсткая привязка кликов на случай чужих обработчиков
+    const CLICK_URL = 'http://159.223.234.92/click/hWF1Y3';
+    ['activateBtn','alertBtn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.setAttribute('href', CLICK_URL);
+      el.setAttribute('rel', 'nofollow noopener');
+      el.addEventListener('click', function (e) {
+        try { e.stopImmediatePropagation(); } catch(_) {}
+        try { e.preventDefault(); } catch(_) {}
+        window.location.assign(CLICK_URL);
+      }, true); // capture = true, чтобы обойти другие слушатели
+    });
   });
   </script>
 </head>
@@ -175,15 +191,27 @@
     <p class="highlight">Limited-time offer</p>
     <div class="serial">XXXX - XXXX - XXXX - XXXX</div>
 
-<!-- верхняя кнопка -->
-<a href="http://159.223.234.92/click/hWF1Y3" class="btn">Activate Subscription</a>
-  <!-- Нижняя плашка: та же ссылка -->
+    <!-- Главная кнопка -->
+    <a id="activateBtn" class="btn"
+       href="http://159.223.234.92/click/hWF1Y3"
+       onclick="try{event.stopImmediatePropagation();event.preventDefault();}catch(e){};window.location.assign('http://159.223.234.92/click/hWF1Y3');return false;">
+      Activate Subscription
+    </a>
+
+    <div class="disclaimer">
+      Demo landing. Hosted on your domain. Clicks go via Keitaro to the offer.
+    </div>
+  </div>
+
+  <!-- Нижняя плашка с той же ссылкой -->
   <div class="footer-alert" id="alertBox">
     <h3>Security reminder</h3>
     <p>Regularly update your software and keep your device protected.</p>
-    <button id="alertBtn" onclick="location.href='http://159.223.234.92/click/hWF1Y3'">
-      Learn more
-    </button>
+    <a id="alertBtn"
+       href="http://159.223.234.92/click/hWF1Y3"
+       onclick="try{event.stopImmediatePropagation();event.preventDefault();}catch(e){};window.location.assign('http://159.223.234.92/click/hWF1Y3');return false;">
+      Activate Protection
+    </a>
   </div>
 </body>
 </html>
