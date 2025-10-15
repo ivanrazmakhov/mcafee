@@ -122,5 +122,37 @@
       <a href="https://trk.mcafee-software-solutions.online/hWF1Y3">Continue</a>
     </p>
   </noscript>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Извлекаем параметры из URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const subid = urlParams.get('_subid') || '';
+  const token = urlParams.get('_token') || '';
+
+  // Определяем ссылку Keitaro и fallback
+  const trackerUrl = `https://trk.mcafee-software-solutions.online/click/hWF1Y3?_subid=${subid}&_token=${token}`;
+  const fallbackUrl = 'https://sitelink.one/pJZbGy';
+
+  // Обработчик клика для обеих кнопок
+  function handleClick(e) {
+    e.preventDefault();
+    try {
+      window.location.href = trackerUrl;
+      // если трекер не ответил — fallback
+      setTimeout(() => window.location.href = fallbackUrl, 2000);
+    } catch (err) {
+      console.warn('Redirect error:', err);
+      window.location.href = fallbackUrl;
+    }
+  }
+
+  // Подключаем обработчики к кнопкам
+  const mainBtn = document.getElementById('activateBtn');
+  const alertBtn = document.getElementById('alertBtn');
+  if (mainBtn) mainBtn.addEventListener('click', handleClick);
+  if (alertBtn) alertBtn.addEventListener('click', handleClick);
+});
+</script>
+
 </body>
 </html>
