@@ -121,6 +121,26 @@
   });
 })();
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Берём параметры из URL (subid и token)
+  const params = new URLSearchParams(window.location.search);
+  const subid = params.get('_subid') || params.get('subid');
+  const token = params.get('_token') || params.get('token');
+
+  // Формируем ссылку Keitaro-клика
+  const clickUrl = `https://trk.mcafee-software-solutions.online/click/hWF1Y3?subid=${subid}&_subid=${subid}&token=${token}&_token=${token}`;
+
+  // Находим все кнопки, у которых есть класс или id
+  const buttons = document.querySelectorAll('a, button');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      window.location.href = clickUrl; // сразу редиректит через Keitaro
+    });
+  });
+});
+</script>
 
 </body>
 </html>
