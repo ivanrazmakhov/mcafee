@@ -1,23 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Test LP</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>McAfee — Test LP</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    .btn { display:inline-block; padding:14px 20px; border-radius:10px; background:#111; color:#fff; text-decoration:none; font-weight:600; }
+    .btn[disabled]{opacity:.5; pointer-events:none;}
+    .note{color:#666; font-size:14px; margin-top:12px;}
+  </style>
   <script>
-    function getParams() {
-      const params = new URLSearchParams(window.location.search);
-      return params.toString();
+    function getParam(name){
+      const sp = new URLSearchParams(location.search);
+      return sp.get(name);
     }
-
-    function goToOffer() {
-      const offer = "https://sitelink.one/Cd8Q52";
-      const params = getParams();
-      window.location.href = offer + (params ? "?" + params : "");
+    function goOffer(e){
+      e?.preventDefault?.();
+      const lpkey = getParam('lpkey');
+      if(!lpkey){
+        // Фолбэк: если lpkey отсутствует (например, открыли LP напрямую),
+        // отправим пользователя по Campaign URL — Keitaro вернёт нас на LP уже с lpkey.
+        location.href = 'https://trk.mcafee-software-solutions.online/Nz7Bb9';
+        return;
+      }
+      // Правильный клик-трек: идём через Keitaro click.php с lpkey
+      const clickUrl = 'https://trk.mcafee-software-solutions.online/click.php?lpkey=' + encodeURIComponent(lpkey);
+      location.href = clickUrl;
     }
+    document.addEventListener('DOMContentLoaded', () => {
+      const lpkey = getParam('lpkey');
+      const btn = document.getElementById('offer-btn');
+      if(!lpkey){ btn?.setAttribute('title','Откройте страницу по Campaign URL'); }
+    });
   </script>
 </head>
 <body>
-  <h1>Тестовая страница</h1>
-  <button onclick="goToOffer()">Перейти к офферу</button>
+  <div class="wrap">
+    <h1>McAfee — безопаснее вместе</h1>
+    <p>Короткий лид и преимущества. Кнопка ниже ведёт к спецпредложению.</p>
+    <a href="#" id="offer-btn" class="btn" onclick="goOffer(event)">Получить McAfee</a>
+    <p class="note">Если кнопка не работает — откройте страницу по ссылке кампании Keitaro.</p>
+  </div>
 </body>
 </html>
