@@ -3,45 +3,86 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>McAfee — Test LP</title>
+  <title>McAfee — тестовый лендинг</title>
+
+  <!-- мета, чтобы превью выглядело прилично, не обязательно -->
+  <meta name="description" content="Безопасность в один клик. Нажмите кнопку, чтобы перейти к специальному предложению." />
+  <meta property="og:title" content="McAfee — тестовый лендинг" />
+  <meta property="og:description" content="Безопасность в один клик. Нажмите кнопку, чтобы перейти к специальному предложению." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://lp.mcafee-software-solutions.online/" />
+
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; }
-    .wrap { max-width: 720px; margin: 0 auto; }
-    .btn { display:inline-block; padding:14px 20px; border-radius:10px; background:#111; color:#fff; text-decoration:none; font-weight:600; }
-    .btn[disabled]{opacity:.5; pointer-events:none;}
-    .note{color:#666; font-size:14px; margin-top:12px;}
+    :root { --bg:#0b0c0f; --card:#11131a; --text:#e9eef5; --muted:#97a2b0; --accent:#39c07d; }
+    * { box-sizing: border-box; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--text); font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+    .wrap { max-width: 840px; margin: 0 auto; padding: 32px 20px 80px; }
+    .card { background: var(--card); border-radius: 16px; padding: 28px; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+    h1 { margin: 0 0 12px; font-size: 28px; }
+    p.lead { margin: 0 0 20px; color: var(--muted); }
+    .btn { display:inline-block; padding:14px 20px; border-radius:12px; background:var(--accent); color:#08110b; text-decoration:none; font-weight:700; }
+    .btn[disabled] { opacity:.55; pointer-events:none; }
+    .note { margin-top: 14px; font-size: 14px; color: var(--muted); }
+    .kbd { display:inline-block; border:1px solid #2b2f3a; border-bottom-width:2px; padding:0 6px; border-radius:6px; background:#0f1219; color:#d2d9e3; font-size:12px; }
   </style>
+
   <script>
-    function getParam(name){
+    // Берём параметр lpkey, который Keitaro добавляет при заходе на LP из Campaign URL
+    function getLpkey() {
       const sp = new URLSearchParams(location.search);
-      return sp.get(name);
+      return sp.get('lpkey');
     }
-    function goOffer(e){
-      e?.preventDefault?.();
-      const lpkey = getParam('lpkey');
-      if(!lpkey){
-        // Фолбэк: если lpkey отсутствует (например, открыли LP напрямую),
-        // отправим пользователя по Campaign URL — Keitaro вернёт нас на LP уже с lpkey.
+
+    // Переход по клику: всегда через Keitaro /click.php — так считается Click и прокидываются параметры в Offer
+    function goThroughKeitaro(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const lpkey = getLpkey();
+
+      if (!lpkey) {
+        // Если LP открыли напрямую (без lpkey), отправим на Campaign URL – Keitaro вернёт на LP уже с lpkey
         location.href = 'https://trk.mcafee-software-solutions.online/Nz7Bb9';
         return;
       }
-      // Правильный клик-трек: идём через Keitaro click.php с lpkey
+
       const clickUrl = 'https://trk.mcafee-software-solutions.online/click.php?lpkey=' + encodeURIComponent(lpkey);
       location.href = clickUrl;
     }
-    document.addEventListener('DOMContentLoaded', () => {
-      const lpkey = getParam('lpkey');
+
+    document.addEventListener('DOMContentLoaded', function() {
       const btn = document.getElementById('offer-btn');
-      if(!lpkey){ btn?.setAttribute('title','Откройте страницу по Campaign URL'); }
+      const lpkey = getLpkey();
+
+      if (!btn) return;
+
+      if (!lpkey) {
+        // Подсказка: кнопка ведёт на Campaign URL, чтобы получить lpkey
+        btn.setAttribute('href', 'https://trk.mcafee-software-solutions.online/Nz7Bb9');
+        btn.setAttribute('title', 'Откройте страницу по Campaign URL, чтобы получить lpkey');
+      } else {
+        // Нормальный режим: считаем клик через click.php
+        btn.setAttribute('href', 'https://trk.mcafee-software-solutions.online/click.php?lpkey=' + encodeURIComponent(lpkey));
+      }
     });
   </script>
 </head>
 <body>
   <div class="wrap">
-    <h1>McAfee — безопаснее вместе</h1>
-    <p>Короткий лид и преимущества. Кнопка ниже ведёт к спецпредложению.</p>
-    <a href="#" id="offer-btn" class="btn" onclick="goOffer(event)">Получить McAfee</a>
-    <p class="note">Если кнопка не работает — откройте страницу по ссылке кампании Keitaro.</p>
+    <div class="card">
+      <h1>McAfee — безопаснее вместе</h1>
+      <p class="lead">Нажмите кнопку ниже, чтобы перейти к специальному предложению.</p>
+
+      <!-- ВАЖНО: клик всегда через Keitaro; href подставляется скриптом сверху -->
+      <a id="offer-btn" class="btn" href="#" onclick="goThroughKeitaro(event)">Получить McAfee</a>
+
+      <p class="note">
+        Если кнопка не ведёт на оффер, откройте страницу по ссылке кампании Keitaro —
+        <span class="kbd">https://trk.mcafee-software-solutions.online/Nz7Bb9</span> — и попробуйте ещё раз.
+      </p>
+
+      <noscript>
+        <p class="note">Для корректной работы включите JavaScript. Без него клик-трекинг не сработает.</p>
+      </noscript>
+    </div>
   </div>
 </body>
 </html>
