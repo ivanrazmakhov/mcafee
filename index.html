@@ -26,32 +26,44 @@
   </style>
 
   <script>
-    // Получаем параметры из URL
-    function getParam(name) {
-      const sp = new URLSearchParams(window.location.search);
-      return sp.get(name);
+    // Берём всю текущую query-строку (включая _subid и _token), без вопросительного знака
+    function currentQuery() {
+      return window.location.search ? window.location.search.substring(1) : "";
     }
 
-    // Основная функция перехода через Keitaro
+    function hasVisitParams() {
+      const sp = new URLSearchParams(window.location.search);
+      return sp.has('_subid') && sp.has('_token');
+    }
+
     function goThroughKeitaro(e) {
       if (e && e.preventDefault) e.preventDefault();
-      const subid = getParam('_subid');
-      const token = getParam('_token');
 
-      // Если пользователь открыл LP напрямую (без параметров) — возвращаем его на Campaign URL
-      if (!subid || !token) {
-        window.location.href = 'https://trk.mcafee-software-solutions.online/Nz7Bb9';
+      // Если визит пришёл корректно (есть _subid и _token) — отправляем на трекер через флаг _lp=1
+      if (hasVisitParams()) {
+        var qs = currentQuery();
+        var glue = qs ? '&' : '';
+        var clickUrl = 'https://trk.mcafee-software-solutions.online/?_lp=1' + glue + qs;
+        window.location.href = clickUrl;
         return;
       }
 
-      // Формируем корректную ссылку на click.php
-      const clickUrl = `https://trk.mcafee-software-solutions.online/click.php?_subid=${encodeURIComponent(subid)}&_token=${encodeURIComponent(token)}`;
-      window.location.href = clickUrl;
+      // Если LP открыли напрямую — вернём человека на Campaign URL, Keitaro сам добавит параметры визита
+      window.location.href = 'https://trk.mcafee-software-solutions.online/Nz7Bb9';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('offer-btn');
-      if (btn) btn.addEventListener('click', goThroughKeitaro);
+    // Подставим правильный href в кнопку на всякий случай (чтобы работало и без onclick)
+    document.addEventListener('DOMContentLoaded', function () {
+      var btn = document.getElementById('offer-btn');
+      if (!btn) return;
+
+      if (hasVisitParams()) {
+        var qs = currentQuery();
+        var glue = qs ? '&' : '';
+        btn.setAttribute('href', 'https://trk.mcafee-software-solutions.online/?_lp=1' + glue + qs);
+      } else {
+        btn.setAttribute('href', 'https://trk.mcafee-software-solutions.online/Nz7Bb9');
+      }
     });
   </script>
 </head>
@@ -61,7 +73,7 @@
       <h1>McAfee — безопаснее вместе</h1>
       <p class="lead">Нажмите кнопку ниже, чтобы перейти к специальному предложению.</p>
 
-      <a id="offer-btn" class="btn" href="#">Получить McAfee</a>
+      <a id="offer-btn" class="btn" href="#" onclick="goThroughKeitaro(event)">Получить McAfee</a>
 
       <p class="note">
         Если кнопка не ведёт на оффер, откройте страницу по ссылке кампании Keitaro —
