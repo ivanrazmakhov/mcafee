@@ -89,5 +89,38 @@
       <a href="https://trk.mcafee-software-solutions.online/click/hWF1Y3">Continue</a>
     </p>
   </noscript>
+  <script>
+(function(){
+  // читаем все варианты названий
+  const q = new URLSearchParams(location.search);
+  const subid = q.get('subid') || q.get('_subid') || '';
+  const token = q.get('token') || q.get('_token') || '';
+
+  // click URL через Keitaro (обязательно /click/ + alias)
+  const CLICK = 'https://trk.mcafee-software-solutions.online/click/hWF1Y3'
+    + (subid || token
+        ? `?subid=${encodeURIComponent(subid)}&_subid=${encodeURIComponent(subid)}&token=${encodeURIComponent(token)}&_token=${encodeURIComponent(token)}`
+        : '');
+
+  // мягкий фолбэк на оффер (на всякий)
+  const OFFER = 'https://sitelink.one/pJZbGy';
+
+  // проставляем href — пусть браузер идёт нативно
+  ['activateBtn','alertBtn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('href', CLICK || OFFER);
+    el.addEventListener('click', () => {
+      // если вдруг за 1500мс мы всё ещё на LP — уводим на оффер
+      setTimeout(() => {
+        if (location.hostname.includes('mcafee-software-solutions.online')) {
+          location.href = OFFER;
+        }
+      }, 1500);
+    }, { passive: true });
+  });
+})();
+</script>
+
 </body>
 </html>
