@@ -7,158 +7,35 @@
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
-  /* База + лэйаут */
-  html { box-sizing: border-box; }
-  *, *::before, *::after { box-sizing: inherit; }
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #d9d9d9;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-  }
+  html{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}
+  body{margin:0;font-family:Arial,sans-serif;background:#d9d9d9;display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
 
-  /* Карточка */
-  .popup {
-    background: #fff;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 12px rgba(0,0,0,0.4);
-    text-align: center;
-    border-radius: 12px;
-    width: min(92vw, 480px);
-    margin: 8vh auto;
-    padding: clamp(16px, 3.5vw, 24px);
-  }
+  .popup{background:#fff;border:1px solid #ccc;box-shadow:0 0 12px rgba(0,0,0,.4);text-align:center;border-radius:12px;width:min(92vw,480px);margin:8vh auto;padding:clamp(16px,3.5vw,24px)}
+  .popup h2{background:#b91c1c;color:#fff;margin:-24px -24px 20px -24px;padding:18px;font-size:clamp(20px,5vw,24px);border-radius:12px 12px 0 0}
+  .popup p{font-size:clamp(14px,3.8vw,16px);line-height:1.5;margin:12px 0}
+  .highlight{color:#b91c1c;font-weight:bold;animation:blink 1s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .serial{background:#f1f1f1;padding:10px;font-family:monospace;margin:14px auto;display:inline-block;font-size:15px;word-break:break-word}
 
-  /* Красная шапка */
-  .popup h2 {
-    background: #b91c1c;
-    color: #fff;
-    margin: -24px -24px 20px -24px;
-    padding: 18px;
-    font-size: clamp(20px, 5vw, 24px);
-    border-radius: 12px 12px 0 0;
-  }
+  .btn,#activateBtn,#alertBtn{background:#b91c1c;color:#fff;border:none;cursor:pointer;font-size:16px;border-radius:10px;text-decoration:none;transition:box-shadow .3s,transform .2s;animation:pulse 1.5s infinite}
+  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-3px)}}
+  .btn:hover,#activateBtn:hover,#alertBtn:hover{background:#991b1b;box-shadow:0 0 12px rgba(185,28,28,.45);animation:pulse 1.5s infinite,shake .3s infinite}
+  @media(hover:none) and (pointer:coarse){.btn:hover,#activateBtn:hover,#alertBtn:hover{animation:none!important;box-shadow:none!important}}
 
-  .popup p {
-    font-size: clamp(14px, 3.8vw, 16px);
-    line-height: 1.5;
-    margin: 12px 0;
-  }
+  @media(max-width:768px){.btn,#activateBtn,#alertBtn{display:block;width:100%;max-width:320px;margin:14px auto 0;padding:12px 16px;min-height:44px}}
+  @media(min-width:769px){.btn,#activateBtn,#alertBtn{display:inline-block;padding:12px 22px;margin-top:18px}}
 
-  .highlight {
-    color: #b91c1c;
-    font-weight: bold;
-    animation: blink 1s infinite;
-  }
-  @keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
+  .footer-alert{position:fixed;bottom:-220px;right:12px;left:12px;background:#fff;border:1px solid #ccc;box-shadow:0 0 8px rgba(0,0,0,.3);font-size:14px;padding:15px;border-radius:12px;transition:bottom .8s ease-in-out;width:auto;z-index:10}
+  .footer-alert.show{bottom:12px}
+  .footer-alert h3{background:#b91c1c;color:#fff;margin:-15px -15px 12px -15px;padding:10px;font-size:15px;border-radius:12px 12px 0 0}
+  .footer-alert a#alertBtn{display:inline-block;padding:10px 16px;border-radius:8px}
+  .footer-alert a#alertBtn:hover{background:#991b1b;box-shadow:0 0 10px rgba(185,28,28,.45)}
+  @media(min-width:481px){.footer-alert{left:auto;width:320px}}
 
-  .serial {
-    background: #f1f1f1;
-    padding: 10px;
-    font-family: monospace;
-    margin: 14px auto;
-    display: inline-block;
-    font-size: 15px;
-    word-break: break-word;
-  }
-
-  /* Кнопки */
-  .btn, #activateBtn, #alertBtn {
-    background: #b91c1c;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: box-shadow 0.3s ease, transform 0.2s ease;
-    animation: pulse 1.5s infinite;
-  }
-  @keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.05)} 100%{transform:scale(1)} }
-  @keyframes shake {
-    0%,100%{transform:translateX(0)}
-    25%{transform:translateX(-3px)}
-    50%{transform:translateX(3px)}
-    75%{transform:translateX(-3px)}
-  }
-  .btn:hover, #activateBtn:hover, #alertBtn:hover {
-    background:#991b1b;
-    box-shadow:0 0 12px rgba(185,28,28,0.45);
-    animation: pulse 1.5s infinite, shake 0.3s infinite;
-  }
-  @media (hover: none) and (pointer: coarse) {
-    .btn:hover, #activateBtn:hover, #alertBtn:hover { animation: none !important; box-shadow: none !important; }
-  }
-
-  /* Размеры кнопок */
-  @media (max-width: 768px) {
-    .btn, #activateBtn, #alertBtn {
-      display: block;
-      width: 100%;
-      max-width: 320px;
-      margin: 14px auto 0;
-      padding: 12px 16px;
-      min-height: 44px;
-    }
-  }
-  @media (min-width: 769px) {
-    .btn, #activateBtn, #alertBtn {
-      display: inline-block;
-      padding: 12px 22px;
-      margin-top: 18px;
-    }
-  }
-
-  /* Нижний алерт */
-  .footer-alert {
-    position: fixed;
-    bottom: -220px;
-    right: 12px;
-    left: 12px;
-    background: #fff;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
-    font-size: 14px;
-    padding: 15px;
-    border-radius: 12px;
-    transition: bottom 0.8s ease-in-out;
-    width: auto;
-    z-index: 10;
-  }
-  .footer-alert.show { bottom: 12px; }
-  .footer-alert h3 {
-    background: #b91c1c;
-    color: #fff;
-    margin: -15px -15px 12px -15px;
-    padding: 10px;
-    font-size: 15px;
-    border-radius: 12px 12px 0 0;
-  }
-  .footer-alert a#alertBtn {
-    display: inline-block;
-    padding: 10px 16px;
-    border-radius: 8px;
-  }
-  .footer-alert a#alertBtn:hover {
-    background: #991b1b;
-    box-shadow: 0 0 10px rgba(185,28,28,0.45);
-  }
-  @media (min-width: 481px) {
-    .footer-alert { left: auto; width: 320px; }
-  }
-
-  .disclaimer {
-    font-size: 12px;
-    color: #6b7280;
-    margin-top: 10px;
-    text-align: left;
-  }
+  .disclaimer{font-size:12px;color:#6b7280;margin-top:10px;text-align:left}
   </style>
 </head>
-
 <body>
   <div class="popup">
     <h2>Activate Protection</h2>
@@ -166,17 +43,15 @@
     <p class="highlight">Limited-time offer</p>
     <div class="serial">XXXX - XXXX - XXXX - XXXX</div>
 
-    <!-- Главная кнопка -->
     <a id="activateBtn" class="btn" href="#" target="_self" rel="nofollow noopener">
       Activate Protection
     </a>
 
     <div class="disclaimer">
-      Demo landing. Hosted on your domain. Clicks go via Keitaro to the offer.
+      Demo landing. Hosted on your domain. Clicks go via tracker to the offer.
     </div>
   </div>
 
-  <!-- Нижняя плашка -->
   <div class="footer-alert" id="alertBox">
     <h3>Security reminder</h3>
     <p>Regularly update your software and keep your device protected.</p>
@@ -185,49 +60,58 @@
     </a>
   </div>
 
-  <!-- Скрипт: показывает алерт и собирает правильный Click URL -->
   <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Показ нижнего алерта
+    // показать нижний алерт с анимацией
     setTimeout(() => {
       const box = document.getElementById('alertBox');
       if (box) box.classList.add('show');
     }, 1200);
 
-    // Базовый Click URL (HTTPS-домен Keitaro)
-    const TRACK_BASE = 'https://trk.mcafee-software-solutions.online/hWF1Y3';
-
-    // Собираем параметры визита/источника
+    // Сбор параметров визита/источника
     const qs = new URLSearchParams(window.location.search);
     if (!qs.has('se_referrer')) qs.set('se_referrer', document.referrer || '');
     if (!qs.has('default_keyword')) qs.set('default_keyword', document.title || '');
 
-    // Привязка к визиту (если есть) — берём _subid или subid, дублируем в оба
+    // Привязка к визиту: берём _subid или subid (если есть) и дублируем
     const subid = qs.get('_subid') || qs.get('subid') || '';
-    if (subid) {
-      qs.set('subid', subid);
-      qs.set('_subid', subid);
+    if (subid) { qs.set('_subid', subid); qs.set('subid', subid); }
+
+    // Основной редирект — Keitaro
+    const TRACK_BASE = 'https://trk.mcafee-software-solutions.online/hWF1Y3';
+    const TRACK_URL  = qs.toString() ? `${TRACK_BASE}?${qs.toString()}` : TRACK_BASE;
+
+    // Фолбэк — прямой оффер (на всякий случай, с теми же параметрами)
+    const OFFER_BASE = 'https://sitelink.one/pJZbGy';
+    const OFFER_URL  = qs.toString() ? `${OFFER_BASE}?${qs.toString()}` : OFFER_BASE;
+
+    function safeGo() {
+      // пробуем через трекер
+      try { window.location.assign(TRACK_URL); } catch(e) {}
+      // если вдруг трекер не увёл — через 1.5с тащим на оффер
+      setTimeout(() => {
+        // Если всё ещё на этом же хосте — дублируем на оффер
+        if (location.hostname.indexOf('mcafee-software-solutions.online') !== -1) {
+          window.location.assign(OFFER_URL);
+        }
+      }, 1500);
     }
 
-    // Итоговая ссылка
-    const CLICK_URL = qs.toString() ? `${TRACK_BASE}?${qs.toString()}` : TRACK_BASE;
-
-    // Подписываем обе кнопки и страхуемся от перехватов клика
+    // навешиваем на обе кнопки (верх + нижний алерт)
     ['activateBtn','alertBtn'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.setAttribute('href', CLICK_URL);
+      el.setAttribute('href', TRACK_URL); // чтобы видно было правильную ссылку при наведении
       el.addEventListener('click', function(e){
-        try{ e.stopImmediatePropagation(); }catch(_){}
-        try{ e.preventDefault(); }catch(_){}
-        window.location.assign(CLICK_URL);
-      }, true); // capture=true — обходим чужие обработчики
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        safeGo();
+      }, true);
     });
   });
   </script>
 
   <noscript>
-    <!-- Фолбэк без JS: просто Click URL без параметров -->
     <p style="text-align:center;margin:20px">
       <a href="https://trk.mcafee-software-solutions.online/hWF1Y3">Continue</a>
     </p>
