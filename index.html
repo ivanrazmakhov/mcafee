@@ -2,78 +2,22 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Offer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7fa;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+  <title>Test LP</title>
+  <script>
+    function getParams() {
+      const params = new URLSearchParams(window.location.search);
+      return params.toString();
     }
 
-    h1 {
-      color: #1d3557;
-      margin-bottom: 10px;
+    function goToOffer() {
+      const offer = "https://sitelink.one/Cd8Q52";
+      const params = getParams();
+      window.location.href = offer + (params ? "?" + params : "");
     }
-
-    p {
-      color: #333;
-      max-width: 400px;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    a.btn {
-      display: inline-block;
-      padding: 14px 28px;
-      background-color: #457b9d;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: background-color 0.25s ease;
-    }
-
-    a.btn:hover {
-      background-color: #1d3557;
-    }
-  </style>
+  </script>
 </head>
 <body>
-  <h1>Ваша безопасность под защитой</h1>
-  <p>Нажмите кнопку ниже, чтобы активировать ваше решение McAfee.</p>
-
-  <!-- Основная кнопка -->
-  <a id="activateBtn" class="btn" href="#">Активировать защиту</a>
-
-  <!-- Резервная кнопка (если вдруг нужно две) -->
-  <a id="alertBtn" class="btn" href="#" style="margin-top:15px;">Получить лицензию</a>
-
-  <script>
-    (function () {
-      // Генерация URL кампании (Keitaro)
-      var campUrl = 'https://trk.mcafee-software-solutions.online/Cd8Q52'
-        + '?se_referrer=' + encodeURIComponent(document.referrer || '')
-        + '&default_keyword=' + encodeURIComponent(document.title || '')
-        + '&' + window.location.search.replace(/^\?/, '');
-
-      // Присваиваем ссылку всем нужным кнопкам
-      ['activateBtn', 'alertBtn'].forEach(function(id) {
-        var a = document.getElementById(id);
-        if (!a) return;
-        a.href = campUrl;
-        a.target = '_self';
-        a.rel = 'nofollow noopener';
-      });
-
-      console.log('Keitaro link set:', campUrl);
-    })();
-  </script>
+  <h1>Тестовая страница</h1>
+  <button onclick="goToOffer()">Перейти к офферу</button>
 </body>
 </html>
