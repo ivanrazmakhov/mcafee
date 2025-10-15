@@ -1,146 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Security Offer</title>
-  <meta name="robots" content="noindex,nofollow" />
   <style>
-    html{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}
-    body{margin:0;font-family:Arial,sans-serif;background:#d9d9d9;display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
-    .popup{background:#fff;border:1px solid #ccc;box-shadow:0 0 12px rgba(0,0,0,.4);text-align:center;border-radius:12px;width:min(92vw,480px);margin:8vh auto;padding:clamp(16px,3.5vw,24px)}
-    .popup h2{background:#b91c1c;color:#fff;margin:-24px -24px 20px -24px;padding:18px;font-size:clamp(20px,5vw,24px);border-radius:12px 12px 0 0}
-    .popup p{font-size:clamp(14px,3.8vw,16px);line-height:1.5;margin:12px 0}
-    .highlight{color:#b91c1c;font-weight:bold;animation:blink 1s infinite}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-    .serial{background:#f1f1f1;padding:10px;font-family:monospace;margin:14px auto;display:inline-block;font-size:15px;word-break:break-word}
-    .btn,#activateBtn,#alertBtn{background:#b91c1c;color:#fff;border:none;cursor:pointer;font-size:16px;border-radius:10px;text-decoration:none;transition:box-shadow .3s,transform .2s;animation:pulse 1.5s infinite}
-    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-3px)}}
-    .btn:hover,#activateBtn:hover,#alertBtn:hover{background:#991b1b;box-shadow:0 0 12px rgba(185,28,28,.45);animation:pulse 1.5s infinite,shake .3s infinite}
-    @media(hover:none) and (pointer:coarse){.btn:hover,#activateBtn:hover,#alertBtn:hover{animation:none!important;box-shadow:none!important}}
-    @media(max-width:768px){.btn,#activateBtn,#alertBtn{display:block;width:100%;max-width:320px;margin:14px auto 0;padding:12px 16px;min-height:44px}}
-    @media(min-width:769px){.btn,#activateBtn,#alertBtn{display:inline-block;padding:12px 22px;margin-top:18px}}
-    .footer-alert{position:fixed;bottom:-220px;right:12px;left:12px;background:#fff;border:1px solid #ccc;box-shadow:0 0 8px rgba(0,0,0,.3);font-size:14px;padding:15px;border-radius:12px;transition:bottom .8s ease-in-out;width:auto;z-index:10}
-    .footer-alert.show{bottom:12px}
-    .footer-alert h3{background:#b91c1c;color:#fff;margin:-15px -15px 12px -15px;padding:10px;font-size:15px;border-radius:12px 12px 0 0}
-    .footer-alert a#alertBtn{display:inline-block;padding:10px 16px;border-radius:8px}
-    .footer-alert a#alertBtn:hover{background:#991b1b;box-shadow:0 0 10px rgba(185,28,28,.45)}
-    @media(min-width:481px){.footer-alert{left:auto;width:320px}}
-    .disclaimer{font-size:12px;color:#6b7280;margin-top:10px;text-align:left}
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      color: #1d3557;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #333;
+      max-width: 400px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    a.btn {
+      display: inline-block;
+      padding: 14px 28px;
+      background-color: #457b9d;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: background-color 0.25s ease;
+    }
+
+    a.btn:hover {
+      background-color: #1d3557;
+    }
   </style>
 </head>
 <body>
-  <div class="popup">
-    <h2>Activate Protection</h2>
-    <p>Keep your device secure with a trusted solution.</p>
-    <p class="highlight">Limited-time offer</p>
-    <div class="serial">XXXX - XXXX - XXXX - XXXX</div>
-    <!-- Верхняя кнопка -->
-    <a id="activateBtn" class="btn" href="#" target="_self" rel="nofollow noopener">
-      Activate Protection
-    </a>
-    <div class="disclaimer">Demo landing. Clicks go via tracker to the offer.</div>
-  </div>
+  <h1>Ваша безопасность под защитой</h1>
+  <p>Нажмите кнопку ниже, чтобы активировать ваше решение McAfee.</p>
 
-  <!-- Нижняя плашка -->
-  <div class="footer-alert" id="alertBox">
-    <h3>Security reminder</h3>
-    <p>Regularly update your software and keep your device protected.</p>
-    <a id="alertBtn" href="#" target="_self" rel="nofollow noopener">Activate Protection</a>
-  </div>
+  <!-- Основная кнопка -->
+  <a id="activateBtn" class="btn" href="#">Активировать защиту</a>
+
+  <!-- Резервная кнопка (если вдруг нужно две) -->
+  <a id="alertBtn" class="btn" href="#" style="margin-top:15px;">Получить лицензию</a>
 
   <script>
-    // Показать нижний алерт
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => { const b=document.getElementById('alertBox'); if (b) b.classList.add('show'); }, 1200);
+    (function () {
+      // Генерация URL кампании (Keitaro)
+      var campUrl = 'https://trk.mcafee-software-solutions.online/Cd8Q52'
+        + '?se_referrer=' + encodeURIComponent(document.referrer || '')
+        + '&default_keyword=' + encodeURIComponent(document.title || '')
+        + '&' + window.location.search.replace(/^\?/, '');
 
-      // читаем _subid/_token с LP
-      const qp   = new URLSearchParams(location.search);
-      const sid  = qp.get('_subid') || '';
-      const tok  = qp.get('_token') || '';
-
-      // формируем кликовый URL Keitaro (без отмены дефолтного поведения)
-      const CLICK = 'https://trk.mcafee-software-solutions.online/click/hWF1Y3'
-        + (sid || tok ? `?_subid=${encodeURIComponent(sid)}&_token=${encodeURIComponent(tok)}` : '');
-
-      // фолбэк на оффер, если трекер "молчит"
-      const OFFER = 'https://sitelink.one/pJZbGy';
-
-      // проставляем href обеим кнопкам
-      ['activateBtn','alertBtn'].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.setAttribute('href', CLICK);
-        // мягкий фолбэк: если через 1500 мс мы всё ещё на LP, уводим на оффер
-        el.addEventListener('click', () => {
-          setTimeout(() => {
-            if (location.hostname.includes('mcafee-software-solutions.online')) {
-              location.href = OFFER;
-            }
-          }, 1500);
-        }, { passive: true });
+      // Присваиваем ссылку всем нужным кнопкам
+      ['activateBtn', 'alertBtn'].forEach(function(id) {
+        var a = document.getElementById(id);
+        if (!a) return;
+        a.href = campUrl;
+        a.target = '_self';
+        a.rel = 'nofollow noopener';
       });
-    });
+
+      console.log('Keitaro link set:', campUrl);
+    })();
   </script>
-
-  <noscript>
-    <p style="text-align:center;margin:20px">
-      <a href="https://trk.mcafee-software-solutions.online/click/hWF1Y3">Continue</a>
-    </p>
-  </noscript>
-  <script>
-(function(){
-  // читаем все варианты названий
-  const q = new URLSearchParams(location.search);
-  const subid = q.get('subid') || q.get('_subid') || '';
-  const token = q.get('token') || q.get('_token') || '';
-
-  // click URL через Keitaro (обязательно /click/ + alias)
-  const CLICK = 'https://trk.mcafee-software-solutions.online/click/hWF1Y3'
-    + (subid || token
-        ? `?subid=${encodeURIComponent(subid)}&_subid=${encodeURIComponent(subid)}&token=${encodeURIComponent(token)}&_token=${encodeURIComponent(token)}`
-        : '');
-
-  // мягкий фолбэк на оффер (на всякий)
-  const OFFER = 'https://sitelink.one/pJZbGy';
-
-  // проставляем href — пусть браузер идёт нативно
-  ['activateBtn','alertBtn'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.setAttribute('href', CLICK || OFFER);
-    el.addEventListener('click', () => {
-      // если вдруг за 1500мс мы всё ещё на LP — уводим на оффер
-      setTimeout(() => {
-        if (location.hostname.includes('mcafee-software-solutions.online')) {
-          location.href = OFFER;
-        }
-      }, 1500);
-    }, { passive: true });
-  });
-})();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Берём параметры из URL (subid и token)
-  const params = new URLSearchParams(window.location.search);
-  const subid = params.get('_subid') || params.get('subid');
-  const token = params.get('_token') || params.get('token');
-
-  // Формируем ссылку Keitaro-клика
-  const clickUrl = `https://trk.mcafee-software-solutions.online/click/hWF1Y3?subid=${subid}&_subid=${subid}&token=${token}&_token=${token}`;
-
-  // Находим все кнопки, у которых есть класс или id
-  const buttons = document.querySelectorAll('a, button');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      window.location.href = clickUrl; // сразу редиректит через Keitaro
-    });
-  });
-});
-</script>
-
 </body>
 </html>
