@@ -1,89 +1,244 @@
-<!doctype html>
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>McAfee — тестовый лендинг</title>
-
-  <meta name="description" content="Безопасность в один клик. Нажмите кнопку, чтобы перейти к специальному предложению." />
-  <meta property="og:title" content="McAfee — тестовый лендинг" />
-  <meta property="og:description" content="Безопасность в один клик. Нажмите кнопку, чтобы перейти к специальному предложению." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://lp.mcafee-software-solutions.online/" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>McAfee Protection Alert</title>
 
   <style>
-    :root { --bg:#0b0c0f; --card:#11131a; --text:#e9eef5; --muted:#97a2b0; --accent:#39c07d; }
-    * { box-sizing: border-box; }
-    html,body { margin:0; padding:0; background:var(--bg); color:var(--text); font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
-    .wrap { max-width: 840px; margin: 0 auto; padding: 32px 20px 80px; }
-    .card { background: var(--card); border-radius: 16px; padding: 28px; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
-    h1 { margin: 0 0 12px; font-size: 28px; }
-    p.lead { margin: 0 0 20px; color: var(--muted); }
-    .btn { display:inline-block; padding:14px 20px; border-radius:12px; background:var(--accent); color:#08110b; text-decoration:none; font-weight:700; }
-    .btn[disabled] { opacity:.55; pointer-events:none; }
-    .note { margin-top: 14px; font-size: 14px; color: var(--muted); }
-    .kbd { display:inline-block; border:1px solid #2b2f3a; border-bottom-width:2px; padding:0 6px; border-radius:6px; background:#0f1219; color:#d2d9e3; font-size:12px; }
+    /* Сброс и базовая сетка */
+    html { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #d9d9d9;
+      -webkit-text-size-adjust: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* Контейнер / popup */
+    .popup {
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      text-align: center;
+      border-radius: 12px;
+      width: min(92vw, 480px);
+      margin: 8vh auto;
+      padding: clamp(16px, 3.5vw, 24px);
+    }
+
+    /* Лого */
+    .logo { margin-bottom: 30px; }
+    .logo img { max-width: 160px; width: 100%; height: auto; }
+
+    /* Заголовки */
+    .popup h2 {
+      background: #b91c1c;
+      color: #fff;
+      margin: -24px -24px 20px -24px;
+      padding: 18px;
+      font-size: clamp(20px, 5vw, 24px);
+      border-radius: 12px 12px 0 0;
+    }
+
+    /* Текст */
+    .popup p {
+      font-size: clamp(14px, 3.8vw, 16px);
+      line-height: 1.5;
+      margin: 12px 0;
+    }
+    .highlight {
+      color: #b91c1c;
+      font-weight: bold;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* Серийник / код */
+    .serial {
+      background: #f1f1f1;
+      padding: 10px;
+      font-family: monospace;
+      margin: 14px auto;
+      display: inline-block;
+      font-size: 15px;
+      word-break: break-word;
+    }
+
+    /* Кнопки */
+    .btn, #activateBtn, #alertBtn {
+      background: #b91c1c;   /* красный */
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Размеры кнопок */
+    @media (max-width: 768px) {
+      .btn, #activateBtn, #alertBtn {
+        display: block;
+        width: 100%;
+        max-width: 320px;
+        margin: 14px auto 0;
+        padding: 12px 16px;
+        min-height: 44px;
+      }
+    }
+    @media (min-width: 769px) {
+      .btn, #activateBtn, #alertBtn {
+        display: inline-block;
+        padding: 12px 22px;
+        margin-top: 18px;
+      }
+    }
+
+    /* Анимации кнопок */
+    @keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.05)} 100%{transform:scale(1)} }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-3px)}
+      50%{transform:translateX(3px)}
+      75%{transform:translateX(-3px)}
+    }
+    .btn, #activateBtn, #alertBtn { animation: pulse 1.5s infinite; }
+    .btn:hover, #activateBtn:hover, #alertBtn:hover {
+      background:#991b1b;  /* тёмно-красный при ховере */
+      box-shadow:0 0 12px rgba(185,28,28,0.45);
+      animation: pulse 1.5s infinite, shake 0.3s infinite;
+    }
+    /* На тач-экранах отключаем hover-анимации */
+    @media (hover: none) and (pointer: coarse) {
+      .btn:hover, #activateBtn:hover, #alertBtn:hover { animation: none !important; box-shadow: none !important; }
+    }
+
+    /* Footer alert */
+    .footer-alert {
+      position: fixed;
+      bottom: -220px;
+      right: 12px;
+      left: 12px;
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 8px rgba(0,0,0,0.3);
+      font-size: 14px;
+      padding: 15px;
+      border-radius: 12px;
+      transition: bottom 0.8s ease-in-out;
+      width: auto;
+    }
+    .footer-alert.show { bottom: 12px; }
+    .footer-alert h3 {
+      background: #b91c1c;
+      color: #fff;
+      margin: -15px -15px 12px -15px;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 12px 12px 0 0;
+    }
+    .footer-alert button, #alertBtn {
+      background: #b91c1c; /* красный */
+      padding: 10px 16px;
+      border-radius: 8px;
+    }
+    .footer-alert button:hover, #alertBtn:hover {
+      background: #991b1b; /* тёмно-красный при ховере */
+      box-shadow: 0 0 10px rgba(185,28,28,0.45);
+    }
+    @media (min-width: 481px) {
+      .footer-alert { left: auto; width: 320px; }
+    }
+
+    /* Дисклеймер */
+    .disclaimer {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 10px;
+      text-align: left;
+    }
   </style>
+</head>
+<body>
+
+  <div class="popup">
+    <div class="logo">
+      <img src="https://media.mcafeeassets.com/content/dam/npcld/ecommerce/en/company-logo/logo-red.svg" alt="McAfee logo" />
+    </div>
+    <h2>Activate McAfee Antivirus Protection</h2>
+    <p>Protect your computer — <strong>Activate McAfee Total Protection Subscription</strong>.</p>
+    <p class="highlight">Your PC may be unprotected, and can be exposed to viruses and other malware...</p>
+    <p><b>Discount:</b> Today only — <mark>UP TO 70% OFF</mark></p>
+    <div class="serial" aria-label="License code">6ZHQ - YV7N - Z9TJ - 0WG2</div>
+    <a id="activateBtn" href="#" class="btn" rel="nofollow">Activate Subscription</a>
+  </div>
+
+  <div class="footer-alert" id="alertBox" role="dialog" aria-live="polite" aria-label="Security alert">
+    <h3>Your PC is infected with 5 viruses!</h3>
+    <p><b>Action required!</b> If your PC is unprotected, it is at risk for viruses and malware.</p>
+    <p>New users can enjoy 70% off upon registration.</p>
+    <button id="alertBtn" type="button" rel="nofollow">Learn more</button>
+  </div>
 
   <script>
+    // Плавное появление нижнего алёрта
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        var box = document.getElementById('alertBox');
+        if (box) box.classList.add('show');
+      }, 3000);
+    });
+
+    // ====== Трекинг через Keitaro ======
     // Берём всю текущую query-строку (включая _subid и _token), без вопросительного знака
     function currentQuery() {
       return window.location.search ? window.location.search.substring(1) : "";
     }
 
     function hasVisitParams() {
-      const sp = new URLSearchParams(window.location.search);
+      var sp = new URLSearchParams(window.location.search);
       return sp.has('_subid') && sp.has('_token');
     }
 
-    function goThroughKeitaro(e) {
-      if (e && e.preventDefault) e.preventDefault();
-
+    function keitaroClickUrl() {
       // Если визит пришёл корректно (есть _subid и _token) — отправляем на трекер через флаг _lp=1
       if (hasVisitParams()) {
         var qs = currentQuery();
         var glue = qs ? '&' : '';
-        var clickUrl = 'https://trk.mcafee-software-solutions.online/?_lp=1' + glue + qs;
-        window.location.href = clickUrl;
-        return;
+        return 'https://trk.mcafee-software-solutions.online/?_lp=1' + glue + qs;
       }
-
-      // Если LP открыли напрямую — вернём человека на Campaign URL, Keitaro сам добавит параметры визита
-      window.location.href = 'https://trk.mcafee-software-solutions.online/Nz7Bb9';
+      // Если LP открыли напрямую — вернём человека на Campaign URL
+      return 'https://trk.mcafee-software-solutions.online/Nz7Bb9';
     }
 
-    // Подставим правильный href в кнопку на всякий случай (чтобы работало и без onclick)
-    document.addEventListener('DOMContentLoaded', function () {
-      var btn = document.getElementById('offer-btn');
-      if (!btn) return;
+    function goThroughKeitaro(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      window.location.href = keitaroClickUrl();
+    }
 
-      if (hasVisitParams()) {
-        var qs = currentQuery();
-        var glue = qs ? '&' : '';
-        btn.setAttribute('href', 'https://trk.mcafee-software-solutions.online/?_lp=1' + glue + qs);
-      } else {
-        btn.setAttribute('href', 'https://trk.mcafee-software-solutions.online/Nz7Bb9');
+    // Привязываем оба CTA к трекеру
+    document.addEventListener('DOMContentLoaded', function () {
+      var btn1 = document.getElementById('activateBtn');
+      var btn2 = document.getElementById('alertBtn');
+      var clickHref = keitaroClickUrl();
+
+      if (btn1) {
+        btn1.setAttribute('href', clickHref);
+        btn1.addEventListener('click', goThroughKeitaro);
+      }
+      if (btn2) {
+        // Для button зададим поведение клика
+        btn2.addEventListener('click', goThroughKeitaro);
       }
     });
   </script>
-</head>
-<body>
-  <div class="wrap">
-    <div class="card">
-      <h1>McAfee — безопаснее вместе</h1>
-      <p class="lead">Нажмите кнопку ниже, чтобы перейти к специальному предложению.</p>
-
-      <a id="offer-btn" class="btn" href="#" onclick="goThroughKeitaro(event)">Получить McAfee</a>
-
-      <p class="note">
-        Если кнопка не ведёт на оффер, откройте страницу по ссылке кампании Keitaro —
-        <span class="kbd">https://trk.mcafee-software-solutions.online/Nz7Bb9</span>
-      </p>
-
-      <noscript>
-        <p class="note">Для корректной работы включите JavaScript. Без него клик-трекинг не сработает.</p>
-      </noscript>
-    </div>
-  </div>
 </body>
 </html>
